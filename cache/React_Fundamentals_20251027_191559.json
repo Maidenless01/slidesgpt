@@ -1,0 +1,97 @@
+[
+  {
+    "slide_number": 1,
+    "title": "React Fundamentals",
+    "bullets": [
+      "Welcome to 'React Fundamentals'!",
+      "This presentation will introduce you to the core concepts of React.",
+      "Learning Objectives: Understand what React is, how to set up a project, grasp components, JSX, props, and state."
+    ],
+    "notes": "Hello everyone! Today we're diving into React, a powerful JavaScript library for building user interfaces. Our goal is to cover the foundational elements that will empower you to start building your own React applications.",
+    "code": ""
+  },
+  {
+    "slide_number": 2,
+    "title": "What is React?",
+    "bullets": [
+      "React is a declarative, efficient, and flexible JavaScript library for building user interfaces.",
+      "It focuses on the 'view' layer of web applications, allowing developers to create complex UIs from small, isolated pieces of code called components.",
+      "React utilizes a Virtual DOM to optimize updates, leading to faster and more efficient rendering of UI changes.",
+      "It promotes a component-based architecture, making code reusable and easier to manage."
+    ],
+    "notes": "React was developed by Facebook and is now widely adopted across the industry. Its declarative nature means you describe what your UI should look like for a given state, and React handles updating the DOM. The Virtual DOM is a key innovation, significantly improving performance by batching updates.",
+    "code": ""
+  },
+  {
+    "slide_number": 3,
+    "title": "Getting Started with React",
+    "bullets": [
+      "The easiest way to start a new React project is by using Create React App (CRA), a toolchain for single-page applications.",
+      "CRA sets up a modern build setup, including Webpack and Babel, so you can focus on writing code.",
+      "Prerequisites typically include Node.js and npm (or yarn) installed on your system."
+    ],
+    "notes": "Create React App simplifies project setup significantly, abstracting away complex configuration details. This allows beginners to jump straight into coding React components without getting bogged down in build tools. After creation, you'll have a ready-to-run development server.",
+    "code": "npx create-react-app my-react-app\ncd my-react-app\nnpm start"
+  },
+  {
+    "slide_number": 4,
+    "title": "React Components: Building Blocks",
+    "bullets": [
+      "Components are independent, reusable pieces of UI that act like custom HTML elements.",
+      "They can be functional components (defined as JavaScript functions) or class components (defined as ES6 classes).",
+      "Each component encapsulates its own logic and UI, making applications modular and easier to maintain.",
+      "React applications are essentially trees of nested components, from simple buttons to entire pages."
+    ],
+    "notes": "Think of components as Lego bricks. You build your application by combining these bricks. Functional components, especially with the introduction of Hooks, are now the preferred way to write components due to their simplicity and readability.",
+    "code": "function WelcomeMessage() {\n  return <h1>Hello, React!</h1>;\n}\n\n// To use it:\n// <WelcomeMessage />"
+  },
+  {
+    "slide_number": 5,
+    "title": "JSX: UI with JavaScript",
+    "bullets": [
+      "JSX (JavaScript XML) is a syntax extension for JavaScript that allows you to write HTML-like code directly within your JavaScript files.",
+      "It's not strictly necessary to use JSX in React, but it makes component definitions much more readable and intuitive.",
+      "JSX expressions are ultimately compiled into regular JavaScript function calls by tools like Babel.",
+      "You can embed JavaScript expressions within JSX using curly braces `{}`."
+    ],
+    "notes": "JSX looks a lot like HTML, but it's important to remember it's still JavaScript. This fusion allows for powerful templating capabilities, letting you easily mix markup with dynamic logic. For example, you can render lists or conditionally display elements directly within your JSX.",
+    "code": "const name = 'Alice';\nconst element = (\n  <h1>\n    Hello, {name}!\n  </h1>\n);\n\n// This JSX is equivalent to:\n// React.createElement('h1', null, 'Hello, ', name, '!');"
+  },
+  {
+    "slide_number": 6,
+    "title": "Props: Component Communication",
+    "bullets": [
+      "Props (short for properties) are how data is passed from a parent component to a child component.",
+      "They are read-only, meaning a child component should never directly modify the props it receives.",
+      "Props enable components to be highly reusable, as they can display different data based on what's passed to them.",
+      "You pass props to custom components using the same syntax as HTML attributes."
+    ],
+    "notes": "Props facilitate one-way data flow in React – from parent to child. This unidirectional flow makes your application's data predictable and easier to debug. When a parent's props change, the child component will re-render with the new data.",
+    "code": "function Greeting(props) {\n  return <p>Hello, {props.name}!</p>;\n}\n\n// Usage in a parent component:\nfunction App() {\n  return <Greeting name=\"World\" />;\n}"
+  },
+  {
+    "slide_number": 7,
+    "title": "State: Dynamic Component Data",
+    "bullets": [
+      "State refers to data that is managed within a component and can change over time.",
+      "When a component's state changes, React re-renders the component to reflect the new state in the UI.",
+      "In functional components, the `useState` Hook is used to declare state variables.",
+      "State allows components to be dynamic and interactive, responding to user input or other events."
+    ],
+    "notes": "Unlike props, which are passed in, state is internal to a component. It's how a component remembers things and reacts to changes. The `useState` Hook provides a simple way to add state to functional components, making them capable of managing their own dynamic data.",
+    "code": "import React, { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n    </div>\n  );\n}"
+  },
+  {
+    "slide_number": 8,
+    "title": "Summary and Next Steps",
+    "bullets": [
+      "React uses a component-based architecture for building modular and reusable UIs.",
+      "JSX allows for writing HTML-like code within JavaScript, enhancing readability.",
+      "Props enable one-way data flow from parent to child components, ensuring reusability.",
+      "State allows components to manage their own dynamic data, making UIs interactive.",
+      "Next Steps: Explore more Hooks (e.g., `useEffect`), React Router for navigation, and global state management libraries like Redux or Zustand."
+    ],
+    "notes": "You've now covered the fundamental building blocks of React! Understanding components, JSX, props, and state is crucial for any React developer. Continue practicing by building small projects and exploring advanced topics to deepen your knowledge.",
+    "code": ""
+  }
+]
