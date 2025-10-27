@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, send_file, jsonify, send_from
 from flask_cors import CORS
 import os
 import json
-from slide_generator import SlideGenerator
+from free_slide_generator import FreeSlideGenerator
 from datetime import datetime
 import traceback
 
@@ -23,6 +23,14 @@ CACHE_DIR = 'cache'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
 
+# Initialize FREE generator (only needs Gemini API key)
+try:
+    generator = FreeSlideGenerator()
+    print("✅ Free Slide Generator initialized successfully")
+except Exception as e:
+    print(f"⚠️  Error initializing generator: {e}")
+    generator = None
+
 
 @app.route('/')
 def index():
@@ -36,18 +44,40 @@ def index():
         }), 500
 
 
+@app.route('/api/themes', methods=['GET'])
+def get_themes():
+    """Get available themes"""
+    if not generator:
+        return jsonify({'error': 'Generator not initialized'}), 500
+    
+    themes = []
+    for key, config in FreeSlideGenerator.THEMES.items():
+        themes.append({
+            'id': key,
+            'name': config['name'],
+            'primary': f"rgb({config['primary'][0]}, {config['primary'][1]}, {config['primary'][2]})",
+            'secondary': f"rgb({config['secondary'][0]}, {config['secondary'][1]}, {config['secondary'][2]})",
+            'accent': f"rgb({config['accent'][0]}, {config['accent'][1]}, {config['accent'][2]})"
+        })
+    return jsonify({'themes': themes})
+
+
 @app.route('/generate', methods=['POST'])
 def generate_presentation():
-    """Handle presentation generation request"""
+    """Generate presentation with FREE tools only"""
     try:
+        if not generator:
+            return jsonify({'error': 'Generator not initialized. Check GEMINI_API_KEY in .env'}), 500
+        
         # Get form data
         data = request.get_json()
-        topic = data.get('prompt', data.get('topic', '')).strip()  # Support both 'prompt' and 'topic'
-        num_slides = int(data.get('num_slides', data.get('slides', 8)))  # Support both field names
+        topic = data.get('prompt', data.get('topic', '')).strip()
+        num_slides = int(data.get('num_slides', data.get('slides', 8)))
         style = data.get('style', 'professional')
         audience = data.get('audience', '').strip()
         include_images = data.get('include_images', False)
         include_code = data.get('include_code', False)
+        theme = data.get('theme', 'modern_blue')
         
         # Validate input
         if not topic:
@@ -63,28 +93,38 @@ def generate_presentation():
         output_filename = f"{safe_topic}_{timestamp}.pptx"
         output_path = os.path.join(OUTPUT_DIR, output_filename)
         
-        # Generate presentation
-        generator = SlideGenerator()
-        _, slides_data = generator.generate_presentation(
-            topic, num_slides, output_path, include_images, include_code, style, audience
-        )
+        print(f"\n{'='*60}")
+        print(f"🎯 Generating FREE presentation:")
+        print(f"   Prompt: {topic}")
+        print(f"   Slides: {num_slides}")
+        print(f"   Theme: {theme}")
+        print(f"   Style: {style}")
+        print(f"   Free Images: {include_images}")
+        print(f"{'='*60}\n")
         
-        # Cache slides data for viewer
-        cache_filename = output_filename.replace('.pptx', '.json')
-        cache_path = os.path.join(CACHE_DIR, cache_filename)
-        with open(cache_path, 'w', encoding='utf-8') as f:
-            json.dump(slides_data, f, indent=2, ensure_ascii=False)
+        # Generate presentation (100% FREE)
+        result = generator.generate_presentation(
+            prompt=topic,
+            num_slides=num_slides,
+            output_path=output_path,
+            style=style,
+            audience=audience,
+            include_code=include_code,
+            include_images=include_images,
+            theme=theme
+        )
         
         return jsonify({
             'success': True,
             'filename': output_filename,
-            'num_slides': len(slides_data),
-            'slides_data': slides_data,
+            'num_slides': result['num_slides'],
+            'slides_data': result['slides_data'],
+            'theme': result['theme'],
             'message': f'Presentation generated successfully!'
         })
         
     except Exception as e:
-        print(f"Error: {str(e)}")
+        print(f"❌ Error: {str(e)}")
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
@@ -146,10 +186,15 @@ def health_check():
 
 
 if __name__ == '__main__':
+    print("\n" + "=" * 60)
+    print("🚀 SlidesGPT FREE Edition - AI Slide Generator")
     print("=" * 60)
-    print("🚀 SlidesGPT - AI Slide Generator")
-    print("=" * 60)
-    print("📝 Web interface starting...")
+    print("� 100% FREE - No paid APIs required!")
+    print(f"📁 Output directory: {OUTPUT_DIR}")
+    print(f"💾 Cache directory: {CACHE_DIR}")
+    if generator:
+        print(f"🎨 Available themes: {len(FreeSlideGenerator.THEMES)}")
+    print(f"🖼️  Free images: Unsplash (unlimited)")
     print("🌐 Open http://localhost:5000 in your browser")
-    print("=" * 60)
+    print("=" * 60 + "\n")
     app.run(debug=True, host='0.0.0.0', port=5000)

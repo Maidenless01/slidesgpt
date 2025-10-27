@@ -24,6 +24,7 @@ export async function generatePresentation(formData) {
         audience: formData.audience,
         include_images: formData.includeImages,
         include_code: formData.includeCode,
+        theme: formData.theme,
       }),
     });
 
@@ -59,9 +60,14 @@ export function getDownloadUrl(filename) {
   return `/download/${encodeURIComponent(filename)}`;
 }
 
-export function getViewerUrl(filename, slidesData) {
-  // Pass slides data as JSON string in URL parameter
-  // Note: We only encode the JSON once, the browser will decode it
+export function getViewerUrl(filename, slidesData, theme) {
+  // Pass slides data and theme as JSON strings in URL parameters
   const slidesJson = JSON.stringify(slidesData);
-  return `/viewer/${encodeURIComponent(filename)}?slides=${encodeURIComponent(slidesJson)}`;
+  let url = `/viewer/${encodeURIComponent(filename)}?slides=${encodeURIComponent(slidesJson)}`;
+  
+  if (theme) {
+    url += `&theme=${encodeURIComponent(theme)}`;
+  }
+  
+  return url;
 }

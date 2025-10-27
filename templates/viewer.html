@@ -437,9 +437,104 @@
         let currentIndex = 0;
         let showingNotes = false;
 
-        // Get slides data from URL parameter
+        // Get slides data and theme from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const slidesData = urlParams.get('slides');
+        const themeId = urlParams.get('theme') || 'modern_blue';
+
+        // Theme color mappings (matching free_slide_generator.py)
+        const THEMES = {
+            'modern_blue': {
+                name: 'Modern Blue',
+                primary: 'rgb(33, 150, 243)',
+                secondary: 'rgb(13, 71, 161)',
+                accent: 'rgb(255, 193, 7)'
+            },
+            'corporate_gray': {
+                name: 'Corporate Gray',
+                primary: 'rgb(66, 66, 66)',
+                secondary: 'rgb(33, 33, 33)',
+                accent: 'rgb(0, 188, 212)'
+            },
+            'creative_purple': {
+                name: 'Creative Purple',
+                primary: 'rgb(156, 39, 176)',
+                secondary: 'rgb(74, 20, 140)',
+                accent: 'rgb(255, 235, 59)'
+            },
+            'tech_dark': {
+                name: 'Tech Dark',
+                primary: 'rgb(0, 188, 212)',
+                secondary: 'rgb(0, 150, 136)',
+                accent: 'rgb(255, 64, 129)'
+            },
+            'elegant_gold': {
+                name: 'Elegant Gold',
+                primary: 'rgb(139, 116, 61)',
+                secondary: 'rgb(101, 84, 44)',
+                accent: 'rgb(255, 215, 0)'
+            },
+            'nature_green': {
+                name: 'Nature Green',
+                primary: 'rgb(76, 175, 80)',
+                secondary: 'rgb(27, 94, 32)',
+                accent: 'rgb(255, 193, 7)'
+            },
+            'vibrant_orange': {
+                name: 'Vibrant Orange',
+                primary: 'rgb(255, 87, 34)',
+                secondary: 'rgb(230, 74, 25)',
+                accent: 'rgb(255, 193, 7)'
+            },
+            'minimal_mono': {
+                name: 'Minimal Monochrome',
+                primary: 'rgb(0, 0, 0)',
+                secondary: 'rgb(97, 97, 97)',
+                accent: 'rgb(189, 189, 189)'
+            },
+            'sunset_gradient': {
+                name: 'Sunset Gradient',
+                primary: 'rgb(255, 94, 77)',
+                secondary: 'rgb(255, 145, 77)',
+                accent: 'rgb(255, 209, 102)'
+            },
+            'ocean_blue': {
+                name: 'Ocean Blue',
+                primary: 'rgb(3, 169, 244)',
+                secondary: 'rgb(1, 87, 155)',
+                accent: 'rgb(0, 188, 212)'
+            }
+        };
+
+        const currentTheme = THEMES[themeId] || THEMES['modern_blue'];
+        
+        // Apply theme colors dynamically
+        function applyTheme() {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .title-slide {
+                    background: linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%) !important;
+                }
+                .slide-header {
+                    background: linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%) !important;
+                }
+                .slide-bullets li:before {
+                    color: ${currentTheme.primary} !important;
+                }
+                .control-btn {
+                    background: ${currentTheme.primary} !important;
+                }
+                .control-btn:hover {
+                    background: ${currentTheme.secondary} !important;
+                }
+                .thumbnail.active {
+                    border-color: ${currentTheme.accent} !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        applyTheme();
 
         if (slidesData) {
             try {

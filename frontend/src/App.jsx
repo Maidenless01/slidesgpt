@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { generatePresentation, getDownloadUrl, getViewerUrl, APIError } from './api'
 
 function App() {
@@ -9,11 +9,29 @@ function App() {
     audience: '',
     includeImages: false,
     includeCode: false,
+    theme: 'modern_blue',
   })
 
+  const [themes, setThemes] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
+
+  // Fetch available themes on mount
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await fetch('/api/themes')
+        const data = await response.json()
+        if (data.themes) {
+          setThemes(data.themes)
+        }
+      } catch (err) {
+        console.error('Failed to fetch themes:', err)
+      }
+    }
+    fetchThemes()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -64,8 +82,9 @@ function App() {
   return (
     <div className="container">
       <div className="header">
-        <h1>🎨 SlidesGPT</h1>
-        <p>AI-Powered Presentation Generator</p>
+        <h1>🎨 SlidesGPT FREE</h1>
+        <p>100% Free AI-Powered Presentation Generator</p>
+        <p className="free-badge">✨ No Paid APIs • Unlimited Themes • Free Stock Images</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -135,6 +154,28 @@ function App() {
           />
         </div>
 
+        <div className="form-group">
+          <label>
+            🎨 Choose Theme
+          </label>
+          <div className="theme-grid">
+            {themes.map(theme => (
+              <div
+                key={theme.id}
+                className={`theme-card ${formData.theme === theme.id ? 'selected' : ''}`}
+                onClick={() => setFormData(prev => ({ ...prev, theme: theme.id }))}
+              >
+                <div className="theme-colors">
+                  <div className="color-bar" style={{ backgroundColor: theme.primary }}></div>
+                  <div className="color-bar" style={{ backgroundColor: theme.secondary }}></div>
+                  <div className="color-bar" style={{ backgroundColor: theme.accent }}></div>
+                </div>
+                <div className="theme-name">{theme.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="checkbox-group">
           <div className="checkbox-item">
             <input
@@ -145,7 +186,9 @@ function App() {
               onChange={handleChange}
               disabled={loading}
             />
-            <label htmlFor="includeImages">Include image suggestions</label>
+            <label htmlFor="includeImages">
+              🖼️ Include Free Stock Images (Unsplash)
+            </label>
           </div>
 
           <div className="checkbox-item">
@@ -157,7 +200,9 @@ function App() {
               onChange={handleChange}
               disabled={loading}
             />
-            <label htmlFor="includeCode">Include code examples</label>
+            <label htmlFor="includeCode">
+              💻 Include Code Examples
+            </label>
           </div>
         </div>
 
@@ -205,7 +250,7 @@ function App() {
               📥 Download PowerPoint
             </a>
             <a
-              href={getViewerUrl(result.filename, result.slides_data)}
+              href={getViewerUrl(result.filename, result.slides_data, result.theme)}
               className="btn-secondary"
               target="_blank"
               rel="noopener noreferrer"

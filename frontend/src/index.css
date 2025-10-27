@@ -39,6 +39,18 @@ body {
   font-size: 1.1em;
 }
 
+.free-badge {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(17, 153, 142, 0.3);
+}
+
 .form-group {
   margin-bottom: 25px;
 }
@@ -100,6 +112,52 @@ body {
   cursor: pointer;
   color: #555;
   font-weight: 500;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.theme-card {
+  cursor: pointer;
+  border: 3px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-card.selected {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.theme-colors {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.color-bar {
+  flex: 1;
+}
+
+.theme-name {
+  text-align: center;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #555;
 }
 
 .btn-primary {
