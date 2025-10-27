@@ -64,6 +64,79 @@
             transform: translateY(-2px);
         }
 
+        .info-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            text-align: center;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .info-banner i {
+            font-size: 1.2em;
+        }
+
+        .info-banner strong {
+            font-weight: 600;
+        }
+
+        .diagram-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 12px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 200px;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .diagram-node {
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .diagram-node:nth-child(1) { animation-delay: 0.1s; }
+        .diagram-node:nth-child(2) { animation-delay: 0.2s; }
+        .diagram-node:nth-child(3) { animation-delay: 0.3s; }
+        .diagram-node:nth-child(4) { animation-delay: 0.4s; }
+        .diagram-node:nth-child(5) { animation-delay: 0.5s; }
+        .diagram-node:nth-child(6) { animation-delay: 0.6s; }
+
+        .diagram-node:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
         .slide-container {
             flex: 1;
             display: flex;
@@ -390,6 +463,11 @@
             </div>
         </div>
 
+        <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Browser Preview:</strong> You can see slide text and <strong>interactive diagrams</strong> here. Download the PowerPoint file for <strong>AI-generated images</strong> and full formatting!</span>
+        </div>
+
         <div class="slide-container" id="slideContainer">
             <!-- Slides will be inserted here -->
         </div>
@@ -551,6 +629,589 @@
             document.getElementById('slideContainer').innerHTML = '<div style="color:white; padding:40px; text-align:center;"><h2>No presentation data found</h2></div>';
         }
 
+        // Diagram rendering functions
+        function renderDiagram(diagram) {
+            const type = diagram.type;
+            const data = diagram.data;
+
+            if (!type || !data || !Array.isArray(data)) {
+                return '';
+            }
+
+            switch (type) {
+                case 'flowchart':
+                    return renderFlowchart(data);
+                case 'timeline':
+                    return renderTimeline(data);
+                case 'comparison':
+                    return renderComparison(data);
+                case 'cycle':
+                    return renderCycleDiagram(data);
+                case 'pyramid':
+                    return renderPyramid(data);
+                default:
+                    return '';
+            }
+        }
+
+        function extractText(item) {
+            if (typeof item === 'string') return item;
+            if (item && typeof item === 'object' && item.text) return item.text;
+            return String(item);
+        }
+
+        function renderFlowchart(steps) {
+            // High contrast colors for maximum readability
+            const colors = [
+                { bg: currentTheme.primary, text: '#ffffff', badge: '#ffffff', badgeText: currentTheme.primary },
+                { bg: currentTheme.secondary, text: '#ffffff', badge: currentTheme.accent, badgeText: '#000000' },
+                { bg: currentTheme.accent, text: '#000000', badge: currentTheme.primary, badgeText: '#ffffff' },
+            ];
+            
+            let html = '<div class="diagram-container"><div style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 420px; margin: 0 auto;">';
+            
+            steps.forEach((step, i) => {
+                const text = extractText(step);
+                const colorScheme = colors[i % colors.length];
+                const isLightBg = colorScheme.text === '#000000';
+                
+                html += `
+                    <div class="diagram-node" style="
+                        background: linear-gradient(135deg, ${colorScheme.bg}, ${colorScheme.bg}dd);
+                        color: ${colorScheme.text};
+                        padding: 12px 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+                        width: 95%;
+                        max-width: 400px;
+                        text-align: center;
+                        font-size: 0.95em;
+                        font-weight: 800;
+                        position: relative;
+                        border: 2px solid ${isLightBg ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.5)'};
+                    ">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <span style="
+                                background: ${colorScheme.badge};
+                                color: ${colorScheme.badgeText};
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: 900;
+                                font-size: 0.95em;
+                                border: 2px solid ${colorScheme.badgeText === '#ffffff' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'};
+                                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                                flex-shrink: 0;
+                                text-shadow: ${colorScheme.badgeText === '#ffffff' ? '0 1px 2px rgba(0,0,0,0.4)' : '0 1px 1px rgba(255,255,255,0.5)'};
+                            ">${i + 1}</span>
+                            <span style="flex: 1; text-shadow: ${isLightBg ? '0 1px 2px rgba(255,255,255,0.8)' : '0 2px 4px rgba(0,0,0,0.4)'};">${text}</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (i < steps.length - 1) {
+                    html += `
+                        <div style="
+                            font-size: 1.6em;
+                            color: ${currentTheme.primary};
+                            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                            animation: bounce 2s infinite;
+                            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+                        ">▼</div>
+                    `;
+                }
+            });
+            
+            html += '</div></div>';
+            
+            // Add animation
+            html += `<style>
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-6px); }
+                }
+            </style>`;
+            
+            return html;
+        }
+
+        function renderTimeline(events) {
+            // High contrast colors for timeline nodes
+            const nodeColors = [
+                { bg: currentTheme.primary, number: '#ffffff' },
+                { bg: currentTheme.secondary, number: '#ffffff' },
+                { bg: currentTheme.accent, number: '#000000' },
+            ];
+            
+            let html = '<div class="diagram-container">';
+            html += '<div style="position: relative; padding: 25px 10px; max-width: 850px; margin: 0 auto;">';
+            
+            // Timeline line with gradient
+            html += `
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 5%;
+                    right: 5%;
+                    height: 4px;
+                    background: linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.accent}, ${currentTheme.secondary});
+                    transform: translateY(-50%);
+                    z-index: 0;
+                    border-radius: 2px;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                "></div>
+            `;
+            
+            // Container for events
+            html += '<div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1;">';
+            
+            // Events with alternating colors
+            events.forEach((event, i) => {
+                const text = extractText(event);
+                const colorScheme = nodeColors[i % nodeColors.length];
+                const isLightText = colorScheme.number === '#ffffff';
+                
+                html += `
+                    <div class="diagram-node" style="text-align: center; flex: 1; position: relative;">
+                        <div style="
+                            width: 42px;
+                            height: 42px;
+                            border-radius: 50%;
+                            background: ${colorScheme.bg};
+                            margin: 0 auto 12px;
+                            border: 4px solid white;
+                            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 900;
+                            color: ${colorScheme.number};
+                            font-size: 1.05em;
+                            text-shadow: ${isLightText ? '0 2px 4px rgba(0,0,0,0.5)' : '0 1px 2px rgba(255,255,255,0.5)'};
+                        ">${i + 1}</div>
+                        <div style="
+                            background: ${i % 2 === 0 ? 'linear-gradient(135deg, ' + currentTheme.primary + '30, ' + currentTheme.primary + '18)' : 'linear-gradient(135deg, ' + currentTheme.secondary + '30, ' + currentTheme.secondary + '18)'};
+                            padding: 8px 10px;
+                            border-radius: 8px;
+                            color: #000000;
+                            font-weight: 800;
+                            font-size: 0.8em;
+                            border: 2px solid ${i % 2 === 0 ? currentTheme.primary : currentTheme.secondary};
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                            min-height: 50px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+                        ">${text}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div></div></div>';
+            return html;
+        }
+
+        function renderComparison(data) {
+            const mid = Math.ceil(data.length / 2);
+            const left = data.slice(0, mid);
+            const right = data.slice(mid);
+            
+            let html = '<div class="diagram-container" style="max-width: 800px; margin: 0 auto;">';
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; position: relative;">';
+            
+            // Center divider line with contrasting gradient
+            html += `
+                <div style="
+                    position: absolute;
+                    left: 50%;
+                    top: 8%;
+                    bottom: 8%;
+                    width: 3px;
+                    background: linear-gradient(180deg, ${currentTheme.primary}, ${currentTheme.accent}, ${currentTheme.secondary});
+                    transform: translateX(-50%);
+                    border-radius: 2px;
+                    box-shadow: 0 0 8px rgba(0,0,0,0.25);
+                "></div>
+            `;
+            
+            // Left column - Blue/Primary theme
+            html += `
+                <div class="diagram-node" style="
+                    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                    border-radius: 10px;
+                    padding: 14px;
+                    border: 3px solid ${currentTheme.primary};
+                    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+                    position: relative;
+                ">
+                    <div style="
+                        background: linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.primary}dd);
+                        color: #ffffff;
+                        padding: 8px 14px;
+                        border-radius: 8px;
+                        text-align: center;
+                        font-weight: 900;
+                        font-size: 0.95em;
+                        margin: -14px -14px 12px -14px;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+                    ">Option A</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+            `;
+            left.forEach((item, idx) => {
+                const text = extractText(item);
+                html += `
+                    <li style="
+                        padding: 8px 6px;
+                        color: #0d47a1;
+                        font-size: 0.85em;
+                        font-weight: 800;
+                        border-bottom: 2px solid ${currentTheme.primary}30;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: ${idx % 2 === 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.4)'};
+                        border-radius: 5px;
+                        margin-bottom: 2px;
+                        text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+                    ">
+                        <span style="
+                            color: #ffffff;
+                            background: linear-gradient(135deg, ${currentTheme.primary}, ${currentTheme.primary}dd);
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 900;
+                            flex-shrink: 0;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                            font-size: 0.85em;
+                            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                        ">✓</span>
+                        <span style="flex: 1;">${text}</span>
+                    </li>
+                `;
+            });
+            html += '</ul></div>';
+            
+            // Right column - Orange/Secondary theme
+            html += `
+                <div class="diagram-node" style="
+                    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+                    border-radius: 10px;
+                    padding: 14px;
+                    border: 3px solid ${currentTheme.secondary};
+                    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+                    position: relative;
+                ">
+                    <div style="
+                        background: linear-gradient(135deg, ${currentTheme.secondary}, ${currentTheme.secondary}dd);
+                        color: #ffffff;
+                        padding: 8px 14px;
+                        border-radius: 8px;
+                        text-align: center;
+                        font-weight: 900;
+                        font-size: 0.95em;
+                        margin: -14px -14px 12px -14px;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+                    ">Option B</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+            `;
+            right.forEach((item, idx) => {
+                const text = extractText(item);
+                html += `
+                    <li style="
+                        padding: 8px 6px;
+                        color: #e65100;
+                        font-size: 0.85em;
+                        font-weight: 800;
+                        border-bottom: 2px solid ${currentTheme.secondary}30;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: ${idx % 2 === 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.4)'};
+                        border-radius: 5px;
+                        margin-bottom: 2px;
+                        text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+                    ">
+                        <span style="
+                            color: #ffffff;
+                            background: linear-gradient(135deg, ${currentTheme.secondary}, ${currentTheme.secondary}dd);
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 900;
+                            flex-shrink: 0;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                            font-size: 0.85em;
+                            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                        ">✓</span>
+                        <span style="flex: 1;">${text}</span>
+                    </li>
+                `;
+            });
+            html += '</ul></div>';
+            
+            html += '</div></div>';
+            return html;
+        }
+
+        function renderCycleDiagram(steps) {
+            const radius = 120;
+            const centerX = 200;
+            const centerY = 155;
+            const angleStep = (2 * Math.PI) / steps.length;
+            
+            // High contrast colors for nodes
+            const nodeColors = [
+                currentTheme.primary,
+                currentTheme.secondary,
+                currentTheme.accent,
+                '#9c27b0', // Purple
+                '#00bcd4', // Cyan
+            ];
+            
+            let html = '<div class="diagram-container">';
+            html += '<div style="display: flex; flex-direction: column; align-items: center; gap: 15px; max-width: 780px; margin: 0 auto;">';
+            html += `<svg width="400" height="310" viewBox="0 0 400 310" style="max-width: 100%; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));">`;
+            
+            // Add gradient definitions for each node
+            html += `<defs>`;
+            nodeColors.forEach((color, idx) => {
+                html += `
+                    <linearGradient id="nodeGradient${idx}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:${color};stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:${color}dd;stop-opacity:1" />
+                    </linearGradient>
+                `;
+            });
+            html += `
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="${currentTheme.primary}" />
+                </marker>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>`;
+            
+            // Draw circular arrows
+            for (let i = 0; i < steps.length; i++) {
+                const angle1 = i * angleStep - Math.PI / 2;
+                const angle2 = (i + 1) * angleStep - Math.PI / 2;
+                const x1 = centerX + radius * Math.cos(angle1);
+                const y1 = centerY + radius * Math.sin(angle1);
+                const x2 = centerX + radius * Math.cos(angle2);
+                const y2 = centerY + radius * Math.sin(angle2);
+                
+                html += `
+                    <path 
+                        d="M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}" 
+                        stroke="${currentTheme.primary}" 
+                        stroke-width="3" 
+                        fill="none" 
+                        marker-end="url(#arrowhead)"
+                        opacity="0.75"
+                    />
+                `;
+            }
+            
+            // Draw center circle with contrasting gradient
+            html += `
+                <circle 
+                    cx="${centerX}" 
+                    cy="${centerY}" 
+                    r="48" 
+                    fill="url(#nodeGradient0)" 
+                    stroke="white" 
+                    stroke-width="4"
+                    filter="url(#glow)"
+                />
+                <text 
+                    x="${centerX}" 
+                    y="${centerY + 5}" 
+                    text-anchor="middle" 
+                    fill="#ffffff" 
+                    font-weight="900" 
+                    font-size="16"
+                    style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
+                >CYCLE</text>
+            `;
+            
+            // Draw nodes with different colors
+            steps.forEach((step, i) => {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                const nodeColor = nodeColors[i % nodeColors.length];
+                
+                html += `
+                    <g class="diagram-node">
+                        <circle 
+                            cx="${x}" 
+                            cy="${y}" 
+                            r="35" 
+                            fill="url(#nodeGradient${i % nodeColors.length})" 
+                            stroke="white" 
+                            stroke-width="4"
+                            filter="url(#glow)"
+                        />
+                        <circle 
+                            cx="${x}" 
+                            cy="${y}" 
+                            r="26" 
+                            fill="rgba(255,255,255,0.3)" 
+                            stroke="white" 
+                            stroke-width="2"
+                        />
+                        <text 
+                            x="${x}" 
+                            y="${y + 5}" 
+                            text-anchor="middle" 
+                            fill="#ffffff" 
+                            font-weight="900" 
+                            font-size="18"
+                            style="text-shadow: 0 2px 5px rgba(0,0,0,0.6);"
+                        >${i + 1}</text>
+                    </g>
+                `;
+            });
+            
+            html += '</svg>';
+            
+            // Add labels below with contrasting backgrounds
+            html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 10px; width: 100%;">';
+            steps.forEach((step, i) => {
+                const text = extractText(step);
+                const nodeColor = nodeColors[i % nodeColors.length];
+                
+                html += `
+                    <div style="
+                        background: linear-gradient(135deg, ${nodeColor}30, ${nodeColor}15);
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        border-left: 3px solid ${nodeColor};
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+                    ">
+                        <span style="
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 26px;
+                            height: 26px;
+                            background: ${nodeColor};
+                            color: #ffffff;
+                            border-radius: 50%;
+                            font-weight: 900;
+                            margin-right: 8px;
+                            font-size: 0.8em;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+                            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+                        ">${i + 1}</span>
+                        <span style="color: #000000; font-weight: 800; font-size: 0.8em; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">${text}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            html += '</div></div>';
+            return html;
+        }
+
+        function renderPyramid(levels) {
+            // High contrast colors for pyramid levels
+            const levelColors = [
+                { bg: currentTheme.primary, text: '#ffffff', border: 'rgba(255,255,255,0.6)' },
+                { bg: currentTheme.secondary, text: '#ffffff', border: 'rgba(255,255,255,0.5)' },
+                { bg: currentTheme.accent, text: '#000000', border: 'rgba(0,0,0,0.3)' },
+                { bg: '#9c27b0', text: '#ffffff', border: 'rgba(255,255,255,0.5)' },
+                { bg: '#00bcd4', text: '#000000', border: 'rgba(0,0,0,0.3)' },
+            ];
+            
+            let html = '<div class="diagram-container">';
+            html += '<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px; max-width: 780px; margin: 0 auto;">';
+            
+            const maxWidth = 400;
+            levels.forEach((level, i) => {
+                const text = extractText(level);
+                const width = maxWidth * (1 - i / levels.length * 0.5);
+                const isTop = i === 0;
+                const colorScheme = levelColors[i % levelColors.length];
+                const isLightText = colorScheme.text === '#ffffff';
+                
+                html += `
+                    <div class="diagram-node" style="
+                        background: linear-gradient(135deg, ${colorScheme.bg}, ${colorScheme.bg}dd);
+                        color: ${colorScheme.text};
+                        padding: ${isTop ? '14px 24px' : '10px 18px'};
+                        border-radius: 10px;
+                        width: ${width}px;
+                        max-width: 92%;
+                        text-align: center;
+                        font-size: ${isTop ? '1em' : '0.9em'};
+                        font-weight: 900;
+                        box-shadow: 0 ${3 + i}px ${8 + i * 2}px rgba(0,0,0,${0.2 + i * 0.03});
+                        position: relative;
+                        border: 2px solid ${colorScheme.border};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        text-shadow: ${isLightText ? '0 2px 5px rgba(0,0,0,0.4)' : '0 1px 2px rgba(255,255,255,0.8)'};
+                    ">
+                        <span style="
+                            background: ${isLightText ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.25)'};
+                            color: ${colorScheme.text};
+                            width: ${isTop ? '32px' : '28px'};
+                            height: ${isTop ? '32px' : '28px'};
+                            border-radius: 50%;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 900;
+                            border: 2px solid ${colorScheme.border};
+                            flex-shrink: 0;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+                            font-size: 0.9em;
+                            text-shadow: ${isLightText ? '0 2px 3px rgba(0,0,0,0.5)' : '0 1px 2px rgba(255,255,255,0.9)'};
+                        ">${i + 1}</span>
+                        <span style="flex: 1;">${text}</span>
+                    </div>
+                `;
+                
+                // Add connecting line between levels with gradient
+                if (i < levels.length - 1) {
+                    const currentColor = levelColors[i % levelColors.length].bg;
+                    const nextColor = levelColors[(i + 1) % levelColors.length].bg;
+                    html += `
+                        <div style="
+                            width: 3px;
+                            height: 10px;
+                            background: linear-gradient(180deg, ${currentColor}, ${nextColor});
+                            opacity: 0.7;
+                            border-radius: 2px;
+                        "></div>
+                    `;
+                }
+            });
+            
+            html += '</div></div>';
+            return html;
+        }
+
         function initializePresentation() {
             if (slides.length === 0) return;
 
@@ -596,6 +1257,7 @@
                 // Content slide
                 const hasCode = slide.code && slide.code.trim();
                 const hasImage = slide.image_prompt && slide.image_prompt.trim();
+                const hasDiagram = slide.diagram && slide.diagram.type && slide.diagram.data;
                 
                 let bodyContent = `<div class="slide-main">
                     <ul class="slide-bullets">
@@ -603,7 +1265,10 @@
                     </ul>
                 </div>`;
 
-                if (hasCode) {
+                if (hasDiagram) {
+                    // Render diagram
+                    bodyContent += renderDiagram(slide.diagram);
+                } else if (hasCode) {
                     bodyContent += `<div class="slide-code"><pre>${escapeHtml(slide.code)}</pre></div>`;
                 } else if (hasImage) {
                     bodyContent += `<div class="slide-image">

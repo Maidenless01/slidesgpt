@@ -76,6 +76,7 @@ def generate_presentation():
         style = data.get('style', 'professional')
         audience = data.get('audience', '').strip()
         include_images = data.get('include_images', False)
+        use_ai_images = data.get('use_ai_images', False)  # NEW: AI image generation
         include_code = data.get('include_code', False)
         theme = data.get('theme', 'modern_blue')
         
@@ -99,10 +100,11 @@ def generate_presentation():
         print(f"   Slides: {num_slides}")
         print(f"   Theme: {theme}")
         print(f"   Style: {style}")
-        print(f"   Free Images: {include_images}")
+        print(f"   Images: {'AI Generated' if use_ai_images else 'Stock Photos' if include_images else 'None'}")
+        print(f"   Diagrams: Enabled (auto-generated)")
         print(f"{'='*60}\n")
         
-        # Generate presentation (100% FREE)
+        # Generate presentation (100% FREE with diagrams & AI images)
         result = generator.generate_presentation(
             prompt=topic,
             num_slides=num_slides,
@@ -110,7 +112,8 @@ def generate_presentation():
             style=style,
             audience=audience,
             include_code=include_code,
-            include_images=include_images,
+            include_images=include_images or use_ai_images,
+            use_ai_images=use_ai_images,
             theme=theme
         )
         
@@ -120,7 +123,7 @@ def generate_presentation():
             'num_slides': result['num_slides'],
             'slides_data': result['slides_data'],
             'theme': result['theme'],
-            'message': f'Presentation generated successfully!'
+            'message': f'Presentation generated successfully with diagrams and {"AI images" if use_ai_images else "stock images" if include_images else "no images"}!'
         })
         
     except Exception as e:

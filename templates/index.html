@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlidesGPT - AI Slide Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: white;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .slide-value {
+            text-align: center;
+            margin-top: 5px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner.active {
+            display: block;
+        }
+
+        .spinner-icon {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .download-btn {
+            margin-top: 15px;
+            background: #28a745;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .examples {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .examples ul {
+            list-style: none;
+        }
+
+        .examples li {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .examples li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Preview Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .preview-header h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .slide-preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .slide-preview h3 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .slide-preview ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .slide-preview li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .slide-preview li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .slide-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .speaker-notes {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .speaker-notes h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .speaker-notes p {
+            margin: 0;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .slide-image {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .slide-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .checkbox-group {
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 SlidesGPT</h1>
+            <p>AI-Powered Presentation Generator - Just Describe What You Want!</p>
+        </div>
+
+        <form id="slideForm">
+            <div class="form-group">
+                <label for="topic">Presentation Description / Prompt</label>
+                <textarea 
+                    id="topic" 
+                    name="topic" 
+                    rows="4"
+                    placeholder="Describe what you want in your presentation. Be specific about topics, key points, or any special requirements.&#10;&#10;Example: 'Create a presentation about React fundamentals covering components, hooks, state management, and best practices. Include code examples and explain concepts for developers who know JavaScript but are new to React.'"
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="style">Presentation Style</label>
+                <select id="style" name="style">
+                    <option value="professional">Professional / Business</option>
+                    <option value="educational">Educational / Academic</option>
+                    <option value="technical">Technical / Developer</option>
+                    <option value="creative">Creative / Marketing</option>
+                    <option value="minimalist">Minimalist / Simple</option>
+                    <option value="playful">Playful / Fun</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="audience">Target Audience (Optional)</label>
+                <input 
+                    type="text" 
+                    id="audience" 
+                    name="audience" 
+                    placeholder="e.g., Beginners, Executives, Students, Developers"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="slides">Number of Slides</label>
+                <div class="slider-container">
+                    <input 
+                        type="range" 
+                        id="slides" 
+                        name="slides" 
+                        min="3" 
+                        max="30" 
+                        value="8"
+                    >
+                    <div class="slide-value"><span id="slideValue">8</span> slides</div>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="includeImages" name="includeImages" checked>
+                    <span>Include AI-generated images (where relevant)</span>
+                </label>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="includeCode" name="includeCode" checked>
+                    <span>Include code examples (for technical topics)</span>
+                </label>
+            </div>
+
+            <button type="submit" id="generateBtn">
+                🚀 Generate Presentation
+            </button>
+        </form>
+
+        <div class="spinner" id="spinner">
+            <div class="spinner-icon"></div>
+            <p>AI is crafting your presentation...</p>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <!-- Preview Modal -->
+        <div class="modal" id="previewModal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closePreview()">&times;</span>
+                <div class="preview-header">
+                    <h2>📊 Presentation Preview</h2>
+                    <p id="previewTopic"></p>
+                </div>
+                <div id="slidesPreview"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn" onclick="closePreview()">
+                        <i class="fas fa-times"></i> Close Preview
+                    </button>
+                    <button class="nav-btn" onclick="downloadFromPreview()" id="downloadFromPreviewBtn">
+                        <i class="fas fa-download"></i> Download PowerPoint
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <h3>💡 Example Prompts:</h3>
+            <ul>
+                <li><strong>Technical:</strong> "Create a presentation about Python async/await. Cover event loops, coroutines, and practical examples. Include code snippets showing common patterns."</li>
+                <li><strong>Business:</strong> "Make a professional presentation on Q4 sales strategy. Include market analysis, competitor comparison, and actionable steps. Focus on ROI and metrics."</li>
+                <li><strong>Educational:</strong> "Explain photosynthesis to high school students. Use simple language, include diagrams suggestions, and connect to real-world examples."</li>
+                <li><strong>Marketing:</strong> "Create a creative pitch deck for a new mobile app. Focus on user benefits, market opportunity, and growth strategy. Make it engaging and visual."</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const slideInput = document.getElementById('slides');
+        const slideValue = document.getElementById('slideValue');
+        const form = document.getElementById('slideForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const spinner = document.getElementById('spinner');
+        const status = document.getElementById('status');
+
+        // Update slide count display
+        slideInput.addEventListener('input', () => {
+            slideValue.textContent = slideInput.value;
+        });
+
+        let currentFilename = '';
+        let currentSlidesData = [];
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const topic = document.getElementById('topic').value;
+            const slides = document.getElementById('slides').value;
+            const style = document.getElementById('style').value;
+            const audience = document.getElementById('audience').value;
+            const includeImages = document.getElementById('includeImages').checked;
+            const includeCode = document.getElementById('includeCode').checked;
+
+            // Show spinner, hide status
+            spinner.classList.add('active');
+            status.classList.remove('active');
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        topic, 
+                        slides,
+                        style,
+                        audience,
+                        include_images: includeImages,
+                        include_code: includeCode
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success
+                    currentFilename = data.filename;
+                    currentSlidesData = data.slides_data || [];
+                    
+                    status.className = 'status success active';
+                    status.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        Your presentation is ready!<br>
+                        <button class="download-btn" onclick="viewPresentation()">
+                            🎬 View Presentation
+                        </button>
+                        <button class="download-btn" onclick="showPreview()">
+                            👁️ Preview Slides
+                        </button>
+                        <button class="download-btn" onclick="downloadFile('${data.filename}')">
+                            📥 Download PowerPoint
+                        </button>
+                    `;
+                } else {
+                    // Error
+                    status.className = 'status error active';
+                    status.innerHTML = `<strong>❌ Error:</strong><br>${data.error}`;
+                }
+            } catch (error) {
+                status.className = 'status error active';
+                status.innerHTML = `<strong>❌ Error:</strong><br>${error.message}`;
+            } finally {
+                spinner.classList.remove('active');
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🚀 Generate Presentation';
+            }
+        });
+
+        function showPreview() {
+            if (currentSlidesData.length === 0) {
+                alert('No slides data available for preview');
+                return;
+            }
+
+            const modal = document.getElementById('previewModal');
+            const previewTopic = document.getElementById('previewTopic');
+            const slidesPreview = document.getElementById('slidesPreview');
+
+            // Set topic
+            previewTopic.textContent = currentSlidesData[0]?.title || 'Presentation';
+
+            // Generate slides HTML
+            let slidesHTML = '';
+            currentSlidesData.forEach((slide, index) => {
+                slidesHTML += `
+                    <div class="slide-preview">
+                        <span class="slide-number">Slide ${slide.slide_number || index + 1}</span>
+                        <h3>${slide.title}</h3>
+                        ${slide.bullets && slide.bullets.length > 0 ? `
+                            <ul>
+                                ${slide.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        ${slide.image_prompt ? `
+                            <div class="slide-image">
+                                <p><em>🎨 Image: ${slide.image_prompt}</em></p>
+                            </div>
+                        ` : ''}
+                        ${slide.code ? `
+                            <div class="code-block"><pre>${escapeHtml(slide.code)}</pre></div>
+                        ` : ''}
+                        ${slide.notes ? `
+                            <div class="speaker-notes">
+                                <h4>📝 Speaker Notes:</h4>
+                                <p>${slide.notes}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            slidesPreview.innerHTML = slidesHTML;
+            modal.classList.add('active');
+        }
+
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('active');
+        }
+
+        function downloadFromPreview() {
+            if (currentFilename) {
+                downloadFile(currentFilename);
+            }
+        }
+
+        function downloadFile(filename) {
+            window.location.href = `/download/${filename}`;
+        }
+
+        function viewPresentation() {
+            if (currentSlidesData.length === 0) {
+                alert('No slides data available');
+                return;
+            }
+            
+            // Open viewer in new window
+            const slidesJson = encodeURIComponent(JSON.stringify(currentSlidesData));
+            window.open(`/viewer?slides=${slidesJson}`, '_blank', 'width=1400,height=900');
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target === modal) {
+                closePreview();
+            }
+        }
+    </script>
+</body>
+</html>

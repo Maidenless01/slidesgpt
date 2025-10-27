@@ -8,6 +8,7 @@ function App() {
     style: 'professional',
     audience: '',
     includeImages: false,
+    useAiImages: false,  // NEW: AI image generation
     includeCode: false,
     theme: 'modern_blue',
   })
@@ -84,7 +85,7 @@ function App() {
       <div className="header">
         <h1>🎨 SlidesGPT FREE</h1>
         <p>100% Free AI-Powered Presentation Generator</p>
-        <p className="free-badge">✨ No Paid APIs • Unlimited Themes • Free Stock Images</p>
+        <p className="free-badge">✨ No Paid APIs • Smart Diagrams • AI Images • Free Themes</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -184,10 +185,24 @@ function App() {
               name="includeImages"
               checked={formData.includeImages}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || formData.useAiImages}
             />
             <label htmlFor="includeImages">
               🖼️ Include Free Stock Images (Unsplash)
+            </label>
+          </div>
+
+          <div className="checkbox-item">
+            <input
+              type="checkbox"
+              id="useAiImages"
+              name="useAiImages"
+              checked={formData.useAiImages}
+              onChange={handleChange}
+              disabled={loading}
+            />
+            <label htmlFor="useAiImages">
+              🎨 Use AI-Generated Images (Pollinations.ai)
             </label>
           </div>
 
@@ -240,22 +255,40 @@ function App() {
       {result && (
         <div className="success">
           <h3>✅ Presentation Created Successfully!</h3>
-          <p>Your presentation has been generated with {result.num_slides} slides.</p>
+          <p>Your presentation has been generated with {result.num_slides} slides using the {result.theme.replace('_', ' ')} theme.</p>
+          
+          <div className="feature-notice">
+            <strong>📊 What's included:</strong>
+            <ul style={{textAlign: 'left', marginTop: '10px', lineHeight: '1.8'}}>
+              <li>✅ AI-generated slide content and speaker notes</li>
+              <li>✅ Professional theme with custom colors</li>
+              {formData.useAiImages && <li>✅ <strong>AI-generated custom images</strong></li>}
+              {formData.includeImages && !formData.useAiImages && <li>✅ <strong>Free stock photos</strong></li>}
+              <li>✅ <strong>Interactive diagrams</strong> (flowcharts, timelines, comparisons, cycles, pyramids)</li>
+              {formData.includeCode && <li>✅ <strong>Syntax-highlighted code examples</strong></li>}
+            </ul>
+            <p style={{marginTop: '15px', padding: '12px', background: 'rgba(102, 126, 234, 0.1)', borderRadius: '8px', fontSize: '0.95em'}}>
+              💡 <strong>Note:</strong> The browser preview now shows <strong>diagrams and text</strong>. Download the PowerPoint file to see AI-generated images and full formatting!
+            </p>
+          </div>
+
           <div className="btn-group">
             <a
               href={getDownloadUrl(result.filename)}
               className="btn-secondary"
               download
+              style={{fontSize: '1.1em', padding: '14px 28px'}}
             >
-              📥 Download PowerPoint
+              📥 Download PowerPoint (Full Version)
             </a>
             <a
               href={getViewerUrl(result.filename, result.slides_data, result.theme)}
               className="btn-secondary"
               target="_blank"
               rel="noopener noreferrer"
+              style={{fontSize: '1.1em', padding: '14px 28px'}}
             >
-              👁️ View Presentation
+              👁️ Preview (Text + Diagrams)
             </a>
             <button
               onClick={handleNewPresentation}

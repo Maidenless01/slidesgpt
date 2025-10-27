@@ -1,154 +1,305 @@
-# SlidesGPT - AI-Powered Presentation Generator# SlidesGPT - AI-Powered Slide Generator
+# 🎨 SlidesGPT FREE - AI Presentation Generator# SlidesGPT - AI-Powered Presentation Generator# SlidesGPT - AI-Powered Slide Generator
 
 
 
-Create professional PowerPoint presentations with AI using a modern React interface and Google Gemini.An intelligent application that automatically generates professional PowerPoint presentations using AI.
+**100% Free AI-Powered Slide Generator** with smart diagrams, AI-generated images, and professional themes. No paid APIs required!
 
 
 
-## ✨ Features## Features
+## ✨ FeaturesCreate professional PowerPoint presentations with AI using a modern React interface and Google Gemini.An intelligent application that automatically generates professional PowerPoint presentations using AI.
 
 
 
-- 🎨 **Modern React UI** - Beautiful, responsive interface built with React + Vite- **AI-Powered Content Generation**: Uses Google Gemini AI to create slide content
+### 🚀 Core Features
 
-- 🤖 **AI-Powered Generation** - Uses Google Gemini API (gemini-2.5-flash) for intelligent content- **Automatic Slide Structure**: Intelligently organizes content into slides
+- ✅ **AI Content Generation** - Google Gemini 2.0 Flash (Free unlimited tier)
 
-- 🎭 **Multiple Styles** - Choose from 6 presentation styles:- **Professional Templates**: Creates visually appealing presentations
+- ✅ **Smart Diagrams** - Auto-generated flowcharts, timelines, comparisons, cycles, pyramids## ✨ Features## Features
+
+- ✅ **AI Image Generation** - Pollinations.ai (Free unlimited AI images)
+
+- ✅ **Stock Photos** - Unsplash Source API (Free unlimited)
+
+- ✅ **10 Professional Themes** - Modern Blue, Creative Purple, Tech Dark, and more
+
+- ✅ **React Frontend** - Modern, responsive UI with theme preview- 🎨 **Modern React UI** - Beautiful, responsive interface built with React + Vite- **AI-Powered Content Generation**: Uses Google Gemini AI to create slide content
+
+- ✅ **Code Examples** - Syntax-highlighted code blocks
+
+- ✅ **Speaker Notes** - AI-generated detailed notes for each slide- 🤖 **AI-Powered Generation** - Uses Google Gemini API (gemini-2.5-flash) for intelligent content- **Automatic Slide Structure**: Intelligently organizes content into slides
+
+
+
+### 📊 Smart Diagrams (Auto-Generated)- 🎭 **Multiple Styles** - Choose from 6 presentation styles:- **Professional Templates**: Creates visually appealing presentations
+
+The AI automatically creates visual diagrams based on your content:
 
   - Professional- **Easy to Use**: Simple web interface or command-line usage
 
-  - Educational- **Customizable**: Adjust number of slides, topics, and presentation style
+1. **Flowchart** - Step-by-step processes, workflows, procedures
 
-  - Technical
+2. **Timeline** - Historical events, project phases, roadmaps  - Educational- **Customizable**: Adjust number of slides, topics, and presentation style
+
+3. **Comparison** - Pros vs cons, before vs after, two options
+
+4. **Cycle** - Iterative processes, life cycles, continuous improvement  - Technical
+
+5. **Pyramid** - Hierarchies, priorities, organizational levels
 
   - Creative## Setup
 
-  - Minimalist
+### 🎨 10 Professional Themes
 
-  - Playful1. **Install Python dependencies**:
+- Modern Blue • Corporate Gray • Creative Purple ⭐ • Tech Dark  - Minimalist
 
-- 💻 **Code Examples** - Optional syntax-highlighted code snippets   ```bash
+- Elegant Gold • Nature Green • Vibrant Orange • Minimal Monochrome
 
-- 🖼️ **Image Suggestions** - AI suggests relevant images for slides   pip install -r requirements.txt
+- Sunset Gradient • Ocean Blue  - Playful1. **Install Python dependencies**:
 
-- 📱 **Presentation Viewer** - Built-in slide viewer with navigation, thumbnails, and speaker notes   ```
 
-- 📥 **PowerPoint Export** - Download as fully-formatted .pptx files
 
-- 🎯 **Audience Targeting** - Customize content for specific audiences2. **Set up your Gemini API key**:
+## 🚀 Quick Start- 💻 **Code Examples** - Optional syntax-highlighted code snippets   ```bash
 
-- 📝 **Prompt-Based Input** - Describe your presentation in detail for better results   - Copy `.env.example` to `.env`
+
+
+### Prerequisites- 🖼️ **Image Suggestions** - AI suggests relevant images for slides   pip install -r requirements.txt
+
+- Python 3.8+
+
+- Node.js 16+ (for frontend development)- 📱 **Presentation Viewer** - Built-in slide viewer with navigation, thumbnails, and speaker notes   ```
+
+
+
+### Installation- 📥 **PowerPoint Export** - Download as fully-formatted .pptx files
+
+
+
+1. **Install Python dependencies**- 🎯 **Audience Targeting** - Customize content for specific audiences2. **Set up your Gemini API key**:
+
+```bash
+
+pip install -r requirements.txt- 📝 **Prompt-Based Input** - Describe your presentation in detail for better results   - Copy `.env.example` to `.env`
+
+```
 
    - Get your free API key from https://aistudio.google.com/app/apikey
 
-## 🚀 Quick Start   - Add your Gemini API key to the `.env` file
+2. **Set up environment variables**  
+
+Create a `.env` file:## 🚀 Quick Start   - Add your Gemini API key to the `.env` file
+
+```env
+
+GEMINI_API_KEY=your_gemini_api_key_here
+
+```
+
+Get your free Gemini API key: https://makersuite.google.com/app/apikey### 1. Install Dependencies3. **Run the application**:
 
 
 
-### 1. Install Dependencies3. **Run the application**:
+3. **Run the application**   
 
-   
+```bash
 
-**Python (Backend):**   **Web Interface**:
+python app.py**Python (Backend):**   **Web Interface**:
+
+```
 
 ```bash   ```bash
 
+4. **Open in browser** → http://localhost:5000
+
 pip install -r requirements.txt   python app.py
+
+## 💻 Usage
 
 ```   ```
 
-   Then open http://localhost:5000 in your browser
+### Web Interface (Recommended)
 
-**Node.js (Frontend):**
-
-```bash   **Command Line**:
-
-cd frontend   ```bash
-
-npm install   python slide_generator.py "Your presentation topic" --slides 10
-
-cd ..   ```
-
-```
-
-## Usage
-
-### 2. Configure API Key
-
-### Web Interface
-
-Create a `.env` file in the root directory:1. Navigate to http://localhost:5000
+1. Open http://localhost:5000   Then open http://localhost:5000 in your browser
 
 2. Enter your presentation topic
 
-```env3. Specify the number of slides (optional)
+3. Choose theme, number of slides, and options**Node.js (Frontend):**
+
+4. Select **AI-Generated Images** for custom images
+
+5. Click "Generate Presentation"```bash   **Command Line**:
+
+6. View in browser or download PowerPoint file
+
+cd frontend   ```bash
+
+### Command Line
+
+```bashnpm install   python slide_generator.py "Your presentation topic" --slides 10
+
+# Basic usage
+
+python free_slide_generator.py "Your topic here" --slides 8cd ..   ```
+
+
+
+# With AI-generated images```
+
+python free_slide_generator.py "AI in Healthcare" --slides 6 --ai-images --theme creative_purple
+
+## Usage
+
+# With code examples
+
+python free_slide_generator.py "Python Tutorial" --slides 12 --code --theme tech_dark### 2. Configure API Key
+
+```
+
+### Web Interface
+
+## 🎯 Examples
+
+Create a `.env` file in the root directory:1. Navigate to http://localhost:5000
+
+### Business Presentation with Diagrams
+
+```bash2. Enter your presentation topic
+
+python free_slide_generator.py "Q4 Business Strategy" --slides 10 --theme corporate_gray --ai-images
+
+``````env3. Specify the number of slides (optional)
+
+**Result:** Flowcharts for strategy steps, timeline for quarterly goals, comparison diagrams for KPIs.
 
 GEMINI_API_KEY=your_api_key_here4. Click "Generate Presentation"
 
-```5. Download your PowerPoint file
+### Educational Content
 
+```bash```5. Download your PowerPoint file
 
+python free_slide_generator.py "Machine Learning Basics" --slides 12 --theme tech_dark --ai-images --code
+
+```
+
+**Result:** Cycle diagrams for ML workflow, code examples, AI-generated illustrations.
 
 Get your free API key from [Google AI Studio](https://aistudio.google.com/app/apikey)### Command Line
 
+## 🖼️ Image Generation
+
 ```bash
 
-### 3. Run the Applicationpython slide_generator.py "Introduction to Machine Learning" --slides 8 --output my_presentation.pptx
+### AI-Generated Images (Recommended)
 
-```
+- **Provider:** Pollinations.ai - 100% Free, unlimited### 3. Run the Applicationpython slide_generator.py "Introduction to Machine Learning" --slides 8 --output my_presentation.pptx
 
-**Production Mode (Recommended):**
+- **Quality:** High-quality AI-generated images based on detailed prompts
 
-```bash## Examples
+- **Use case:** Custom visuals that exactly match your content```
+
+
+
+### Stock Photos**Production Mode (Recommended):**
+
+- **Provider:** Unsplash Source - 100% Free, unlimited
+
+- **Quality:** Professional photography```bash## Examples
+
+- **Use case:** Real-world photos, generic imagery
 
 # Build React frontend (first time only)
 
+## 📊 Diagram Types
+
 cd frontend```bash
+
+All diagrams are automatically generated by AI based on your content:
 
 npm run build# Generate a 10-slide presentation on AI
 
-cd ..python slide_generator.py "Artificial Intelligence in Healthcare" --slides 10
+- **Flowchart** → Process flows, workflows, decision trees
 
+- **Timeline** → Project phases, historical events, roadmapscd ..python slide_generator.py "Artificial Intelligence in Healthcare" --slides 10
 
+- **Comparison** → Pros/cons, before/after, feature comparison
+
+- **Cycle** → Iterative processes, feedback loops, lifecycles
+
+- **Pyramid** → Hierarchies, priorities, organizational structure
 
 # Start the server# Generate a business presentation
 
+## 🆓 100% Free Services Used
+
 python app.pypython slide_generator.py "Q4 2024 Marketing Strategy" --slides 12
 
-``````
+1. **Google Gemini 2.0 Flash** - AI content generation
 
+2. **Pollinations.ai** - AI image generation``````
 
+3. **Unsplash Source** - Stock photos
+
+4. **Python-pptx** - PowerPoint generation (open source)
+
+5. **React + Vite** - Frontend framework (open source)
 
 Open http://localhost:5000 in your browser## Requirements
 
+## 🐛 Troubleshooting
 
 
-**Development Mode (with hot reload):**- Python 3.8+
+
+### "Generator not initialized"
+
+- Check that `GEMINI_API_KEY` is set in `.env` file**Development Mode (with hot reload):**- Python 3.8+
+
+- Verify the API key at https://makersuite.google.com/app/apikey
 
 - Google Gemini API key (free tier available)
 
-Terminal 1 - Flask backend:- Internet connection
+### Images not generating
+
+- AI images may take 10-30 seconds (Pollinations.ai)Terminal 1 - Flask backend:- Internet connection
+
+- Fallback to stock photos if AI fails
+
+- Check internet connection```bash
+
+
+
+### Diagrams not appearingpython app.py## License
+
+- AI automatically detects when to add diagrams based on content
+
+- Include keywords like "process", "timeline", "comparison" in your prompt```
+
+
+
+## 📝 LicenseMIT License
+
+
+
+MIT License - Free for personal and commercial useTerminal 2 - React dev server:
 
 ```bash
 
-python app.py## License
+## 🙏 Acknowledgmentscd frontend
 
-```
-
-MIT License
-
-Terminal 2 - React dev server:
-```bash
-cd frontend
 npm run dev
-```
 
-Open http://localhost:5173 (React dev server with hot reload)
+- Google Gemini for free AI content generation```
 
-## 📖 Usage
+- Pollinations.ai for free AI image generation
 
-### Web Interface
+- Unsplash for free stock photographyOpen http://localhost:5173 (React dev server with hot reload)
+
+
+
+---## 📖 Usage
+
+
+
+**Made with ❤️ using 100% free AI services**### Web Interface
+
 
 1. **Enter a detailed prompt** describing your presentation
    - Example: "Create a comprehensive presentation about React for beginners, covering setup, components, state, and props with code examples"
