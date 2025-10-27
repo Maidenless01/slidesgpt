@@ -10,6 +10,7 @@ __pycache__/
 env/
 venv/
 ENV/
+.conda/
 build/
 develop-eggs/
 dist/
@@ -26,12 +27,28 @@ wheels/
 .installed.cfg
 *.egg
 
+# Node.js / React
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+
 # Generated presentations
 *.pptx
-output/
+output/*.pptx
+cache/*.json
+
+# Built React app
+static/frontend/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Test files
+test*.py
+test*.pptx
+find_models.py

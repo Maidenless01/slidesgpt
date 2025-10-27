@@ -31,8 +31,9 @@ def index():
     if os.path.exists(frontend_path):
         return send_from_directory(app.static_folder, 'index.html')
     else:
-        # Fallback to template if React build doesn't exist
-        return render_template('index.html')
+        return jsonify({
+            'error': 'Frontend not built. Run: cd frontend && npm run build'
+        }), 500
 
 
 @app.route('/generate', methods=['POST'])
